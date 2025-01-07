@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void train_perceptron(int x[][3], int Y[], float w[], int epochs, float lr) {
+    int Y_p[4];
+    int err = 0;
+    float net;
+    int epoch = 0;
+
+    do {
+        for (int i = 0; i < 4; i++) {
+            net = 0.0;
+            for (int j = 0; j < 3; j++) {
+                net += w[j] * x[i][j];
+            }
+            Y_p[i] = (net >= 0) ? 1 : 0;
+            err = Y[i] - Y_p[i];
+
+            for (int j = 0; j < 3; j++) {
+                w[j] += lr * x[i][j] * err;
+            }
+        }
+        epoch++;
+    } while (Y_p[0] != Y[0] || Y_p[1] != Y[1] || Y_p[2] != Y[2] || Y_p[3] != Y[3] && epoch < epochs);
+
+    printf("Learning rate: %.2f, Epochs: %d\n", lr, epoch);
+}
+
+int main() {
+    int Y[4] = {0, 0, 0, 1};
+    float w[3] = {1.0, 1.0, 1.0};
+    int x[4][3] = {
+        {1, 0, 0},
+        {1, 0, 1},
+        {1, 1, 0},
+        {1, 1, 1}
+    };
+    float lr = 0.5;
+    int max_epochs = 100;
+
+    printf("Training a perceptron\n");
+    train_perceptron(x, Y, w, max_epochs, lr);
+
+    return 0;
+}
